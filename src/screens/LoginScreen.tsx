@@ -10,12 +10,14 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSignIn } from '@clerk/clerk-expo';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,16 +46,25 @@ const LoginScreen: React.FC = () => {
   const handleLogin = async () => {
     if (!validateForm()) return;
 
+    if (!isLoaded) return;
+
     setLoading(true);
     try {
-      // Simular login por enquanto
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Navegar para Home após login simulado
-      navigation.navigate('Home' as never);
+      // Tentar fazer login com o Clerk
+      const result = await signIn.create({
+        identifier: email,
+        password,
+      });
+
+      if (result.status === 'complete') {
+        await setActive({ session: result.createdSessionId });
+        // A navegação será automática devido ao estado isSignedIn no AppNavigator
+      } else {
+        Alert.alert('Erro', 'Falha no login. Tente novamente.');
+      }
     } catch (err: any) {
       console.log('Erro detalhado:', err);
-      Alert.alert('Erro', 'Erro inesperado');
+      Alert.alert('Erro', err.errors?.[0]?.message || 'Erro inesperado');
     } finally {
       setLoading(false);
     }
