@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
-import { useOAuth } from '@clerk/clerk-expo';
 
 interface GoogleSignInButtonProps {
   onSuccess?: () => void;
@@ -11,19 +10,14 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   onSuccess,
   onError,
 }) => {
-  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' });
-
   const handleGoogleSignIn = async () => {
     try {
-      const { createdSessionId, setActive } = await startOAuthFlow();
-
-      if (createdSessionId && setActive) {
-        await setActive({ session: createdSessionId });
-        onSuccess?.();
-      }
+      // Simular login Google por enquanto
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      onSuccess?.();
     } catch (err: any) {
       console.log('Erro no login Google:', err);
-      const errorMessage = err.errors?.[0]?.message || 'Erro no login com Google';
+      const errorMessage = 'Erro no login com Google';
       onError?.(errorMessage);
       Alert.alert('Erro', errorMessage);
     }
