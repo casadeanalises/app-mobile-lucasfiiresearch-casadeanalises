@@ -5,16 +5,20 @@ import { useAuth } from '@clerk/clerk-expo';
 import { RootStackParamList } from '../types';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import VerifyEmailScreen from '../screens/VerifyEmailScreen';
 import HomeScreen from '../screens/HomeScreen';
+import LoadingScreen from '../components/LoadingScreen';
+import { useAppLoading } from '../hooks/useAppLoading';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
   const { isSignedIn, isLoaded } = useAuth();
+  const isAppLoading = useAppLoading();
 
-  if (!isLoaded) {
-    // Mostrar loading screen
-    return null;
+  // Mostrar loading se o app está carregando ou se o Clerk não carregou
+  if (isAppLoading || !isLoaded) {
+    return <LoadingScreen />;
   }
 
   return (
@@ -32,6 +36,7 @@ const AppNavigator: React.FC = () => {
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="VerifyEmail" component={VerifyEmailScreen} />
           </>
         )}
       </Stack.Navigator>

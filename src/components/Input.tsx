@@ -15,6 +15,7 @@ const Input: React.FC<InputProps> = ({
   secureTextEntry = false,
   keyboardType = 'default',
   error,
+  maxLength,
 }) => {
   return (
     <View style={styles.container}>
@@ -29,6 +30,7 @@ const Input: React.FC<InputProps> = ({
         keyboardType={keyboardType}
         autoCapitalize="none"
         autoCorrect={false}
+        maxLength={maxLength}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>

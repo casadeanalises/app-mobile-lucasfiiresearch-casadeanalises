@@ -13,6 +13,7 @@ import { useSignIn } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -131,6 +132,14 @@ const LoginScreen: React.FC = () => {
                 onPress={handleSignUp}
                 variant="outline"
               />
+
+              <View style={styles.divider}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>ou</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              <GoogleSignInButton />
             </View>
           </View>
         </ScrollView>
@@ -176,6 +185,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginBottom: 8,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#D1D1D6',
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: '#8E8E93',
+    fontSize: 14,
   },
 });
 

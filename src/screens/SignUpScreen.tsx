@@ -13,6 +13,7 @@ import { useSignUp } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const SignUpScreen: React.FC = () => {
   const { signUp, setActive, isLoaded } = useSignUp();
@@ -67,7 +68,6 @@ const SignUpScreen: React.FC = () => {
         emailAddress: email,
         password,
         username,
-        firstName: username, // Usar username como firstName para compatibilidade
       });
 
       if (result.status === 'complete') {
@@ -82,8 +82,8 @@ const SignUpScreen: React.FC = () => {
             {
               text: 'OK',
               onPress: () => {
-                // Aqui você pode navegar para uma tela de verificação
-                Alert.alert('Próximo passo', 'Verifique seu email e volte para fazer login.');
+                // Navegar para a tela de verificação
+                navigation.navigate('VerifyEmail' as never);
               }
             }
           ]
@@ -155,6 +155,14 @@ const SignUpScreen: React.FC = () => {
                 onPress={handleLogin}
                 variant="outline"
               />
+
+              <View style={styles.divider}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>ou</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              <GoogleSignInButton />
             </View>
           </View>
         </ScrollView>
@@ -195,6 +203,21 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 16,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#D1D1D6',
+  },
+  dividerText: {
+    marginHorizontal: 16,
+    color: '#8E8E93',
+    fontSize: 14,
   },
 });
 

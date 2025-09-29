@@ -12,6 +12,8 @@ export interface User {
 // Tipos de navegação
 export type RootStackParamList = {
   Login: undefined;
+  SignUp: undefined;
+  VerifyEmail: undefined;
   Home: undefined;
   Profile: undefined;
   Settings: undefined;
@@ -42,6 +44,7 @@ export interface InputProps {
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
   error?: string | undefined;
+  maxLength?: number;
 }
 
 // Tipos de API
