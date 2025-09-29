@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,10 @@ import {
 } from 'react-native';
 import { useUser, useAuth } from '@clerk/clerk-expo';
 import Button from '../components/Button';
-import LoadingScreen from '../components/LoadingScreen';
 
 const HomeScreen: React.FC = () => {
   const { user } = useUser();
   const { signOut } = useAuth();
-  const [showLoading, setShowLoading] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -22,17 +20,6 @@ const HomeScreen: React.FC = () => {
       Alert.alert('Erro', 'Falha ao sair da conta');
     }
   };
-
-  const handleShowLoading = () => {
-    setShowLoading(true);
-    setTimeout(() => {
-      setShowLoading(false);
-    }, 3000);
-  };
-
-  if (showLoading) {
-    return <LoadingScreen />;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,12 +39,6 @@ const HomeScreen: React.FC = () => {
         </View>
 
         <View style={styles.actions}>
-          <Button
-            title="Testar Loading"
-            onPress={handleShowLoading}
-            variant="primary"
-          />
-          
           <Button
             title="Sair da conta"
             onPress={handleSignOut}
