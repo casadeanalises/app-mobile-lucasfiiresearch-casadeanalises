@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser, useAuth } from '@clerk/clerk-expo';
 import Button from '../components/Button';
 
-const HomeScreen: React.FC = () => {
+const ProfileScreen: React.FC = () => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const insets = useSafeAreaInsets();
@@ -26,17 +26,17 @@ const HomeScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
-        <Text style={styles.title}>Bem-vindo!</Text>
-        <Text style={styles.subtitle}>
-          Olá, {user?.firstName || 'Usuário'}!
-        </Text>
+        <Text style={styles.title}>Perfil</Text>
         
         <View style={styles.userInfo}>
+          <Text style={styles.infoLabel}>Nome:</Text>
           <Text style={styles.infoText}>
-            Email: {user?.emailAddresses[0]?.emailAddress}
+            {user?.firstName} {user?.lastName}
           </Text>
+          
+          <Text style={styles.infoLabel}>Email:</Text>
           <Text style={styles.infoText}>
-            Nome: {user?.firstName} {user?.lastName}
+            {user?.emailAddresses[0]?.emailAddress}
           </Text>
         </View>
 
@@ -68,22 +68,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#B0B0B0',
-    textAlign: 'center',
     marginBottom: 32,
   },
   userInfo: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 16,
-    borderRadius: 8,
+    padding: 20,
+    borderRadius: 12,
     marginBottom: 32,
   },
-  infoText: {
+  infoLabel: {
     fontSize: 16,
+    fontWeight: '600',
+    color: '#B0B0B0',
+    marginBottom: 8,
+    marginTop: 16,
+  },
+  infoText: {
+    fontSize: 18,
     color: '#FFFFFF',
     marginBottom: 8,
   },
@@ -92,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default ProfileScreen;
