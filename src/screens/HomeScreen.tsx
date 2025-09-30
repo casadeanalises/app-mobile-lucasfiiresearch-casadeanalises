@@ -86,7 +86,7 @@ const HomeScreen: React.FC = () => {
         {/* Header com ícone e saudação */}
         <View style={styles.header}>
           <View style={styles.iconContainer}>
-            <Ionicons name="sparkles" size={24} color={subscription.hasSubscription ? '#4CAF50' : '#DC3545'} />
+            <Ionicons name="sparkles" size={24} color={subscription.hasSubscription ? '#4CAF50' : '#DC3545'} /> 
           </View>
           <View style={styles.greetingContainer}>
             <Text style={[styles.greeting, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>

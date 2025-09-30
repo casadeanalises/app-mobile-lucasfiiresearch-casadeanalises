@@ -4,14 +4,14 @@
     "slug": "lucas-fii-research-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo_2.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "description": "Aplicativo mobile do Lucas Fii Research - Plataforma de pesquisa e análises",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/logo_2.png",
       "resizeMode": "contain",
-      "backgroundColor": "#007AFF"
+      "backgroundColor": "#060d6f"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -24,7 +24,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#007AFF"
+        "backgroundColor": "#060d6f"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
