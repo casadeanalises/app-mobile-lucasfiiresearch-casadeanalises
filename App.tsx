@@ -5,7 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import { tokenCache } from './src/services/tokenCache';
 
-// Chave pública do Clerk
+// Chave pública do Clerk - você precisa configurar esta variável
 const publishableKey = process.env['EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY'];
 
 if (!publishableKey) {
