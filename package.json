@@ -12,11 +12,17 @@
     "build:ios": "expo build:ios",
     "type-check": "tsc --noEmit",
     "lint": "expo lint",
-    "clean": "expo r -c"
+    "clean": "expo r -c",
+    "eas:preview:android": "eas build --profile preview --platform android",
+    "eas:preview:ios": "eas build --profile preview --platform ios",
+    "eas:preview:all": "eas build --profile preview --platform all",
+    "eas:production:android": "eas build --profile production --platform android",
+    "eas:production:ios": "eas build --profile production --platform ios"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.15.3",
     "@expo/cli": "^54.0.8",
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.4.7",
     "@react-navigation/native": "^7.1.17",
     "@react-navigation/stack": "^7.4.8",
@@ -32,12 +38,14 @@
     "react-native": "0.81.4",
     "react-native-gesture-handler": "^2.28.0",
     "react-native-safe-area-context": "^5.6.1",
-    "react-native-screens": "^4.16.0"
+    "react-native-screens": "^4.16.0",
+    "react-native-webview": "^13.16.0"
   },
   "devDependencies": {
     "@types/react": "~19.1.10",
     "babel-plugin-module-resolver": "^5.0.2",
     "babel-preset-expo": "^54.0.3",
+    "eas-cli": "^16.20.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"

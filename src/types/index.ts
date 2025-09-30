@@ -23,6 +23,11 @@ export type MainTabParamList = {
   Profile: undefined;
 };
 
+export type CatalogStackParamList = {
+  CatalogHome: undefined;
+  InvestmentThesis: undefined;
+};
+
 // Tipos de autenticação
 export interface AuthState {
   isSignedIn: boolean;

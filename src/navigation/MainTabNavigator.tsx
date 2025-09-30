@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/HomeScreen';
-import CatalogScreen from '../screens/CatalogScreen';
+import CatalogStackNavigator from './CatalogStackNavigator';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -60,7 +60,7 @@ const MainTabNavigator: React.FC = () => {
       />
       <Tab.Screen 
         name="Catalog" 
-        component={CatalogScreen}
+        component={CatalogStackNavigator}
         options={{
           tabBarLabel: 'Catálogo',
         }}
