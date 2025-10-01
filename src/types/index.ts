@@ -26,6 +26,7 @@ export type MainTabParamList = {
 export type CatalogStackParamList = {
   CatalogHome: undefined;
   InvestmentThesis: undefined;
+  WeeklyReports: undefined;
 };
 
 // Tipos de autenticação

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,11 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { CatalogStackParamList } from '../types';
@@ -18,6 +20,38 @@ type NavigationProp = StackNavigationProp<CatalogStackParamList, 'CatalogHome'>;
 const CatalogScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useUser();
+  const [hasActivePlan, setHasActivePlan] = useState<boolean | null>(null);
+
+  // Verificar se o usuário tem assinatura (igual à página inicial)
+  const getUserSubscription = () => {
+    if (!user) return false;
+    
+    const publicMetadata = user.publicMetadata as any;
+    const subscriptionPlan = publicMetadata?.subscriptionPlan;
+    
+    return subscriptionPlan === 'basic' || 
+           subscriptionPlan === 'annualbasic' || 
+           subscriptionPlan === 'etfs_wallet' || 
+           subscriptionPlan === 'lowcost';
+  };
+
+  // Verificar plano quando o usuário muda
+  useEffect(() => {
+    const hasPlan = getUserSubscription();
+    setHasActivePlan(hasPlan);
+  }, [user]);
+
+  // Função para mostrar alerta de plano necessário
+  const showPlanRequiredAlert = () => {
+    Alert.alert(
+      'Plano Necessário',
+      'Você precisa de um plano ativo para acessar este conteúdo. Acesse o site lucasfiiresearch.com.br para adquirir seu plano.',
+      [
+        { text: 'Entendi', style: 'default' }
+      ]
+    );
+  };
   
   const catalogItems = [
     {
@@ -27,10 +61,47 @@ const CatalogScreen: React.FC = () => {
       icon: 'play-circle' as const,
       color: '#F59E0B',
       gradient: ['rgba(245, 158, 11, 0.2)', 'rgba(245, 158, 11, 0.1)'],
-      onPress: () => navigation.navigate('InvestmentThesis'),
+      onPress: () => {
+        // Verificar plano em tempo real (evita race condition)
+        const currentPlan = getUserSubscription();
+        
+        if (currentPlan) {
+          navigation.navigate('InvestmentThesis');
+        } else {
+          showPlanRequiredAlert();
+        }
+      },
     },
-    // Adicione mais itens aqui conforme necessário
+    {
+      id: 'weekly-reports',
+      title: 'Relatórios Semanais PDFs',
+      description: 'Acesse análises detalhadas e relatórios em PDF',
+      icon: 'document-text' as const,
+      color: '#8B5CF6',
+      gradient: ['rgba(139, 92, 246, 0.2)', 'rgba(139, 92, 246, 0.1)'],
+      onPress: () => {
+        // Verificar plano em tempo real (evita race condition)
+        const currentPlan = getUserSubscription();
+        
+        if (currentPlan) {
+          navigation.navigate('WeeklyReports');
+        } else {
+          showPlanRequiredAlert();
+        }
+      },
+    },
   ];
+
+  // Mostrar loading enquanto verifica o plano
+  if (hasActivePlan === null) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Verificando seu plano...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -215,6 +286,17 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#111548',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 

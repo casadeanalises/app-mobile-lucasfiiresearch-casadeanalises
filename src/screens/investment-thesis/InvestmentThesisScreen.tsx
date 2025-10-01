@@ -14,7 +14,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '@clerk/clerk-expo';
 import { HomeVideo } from '../../types/video';
 import { fetchVideos } from '../../services/api';
 import { VideoCard } from './components/VideoCard';
@@ -23,7 +22,6 @@ import { VideoModal } from './components/VideoModal';
 const InvestmentThesisScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { getToken } = useAuth();
   
   // Estados
   const [videos, setVideos] = useState<HomeVideo[]>([]);
@@ -39,7 +37,7 @@ const InvestmentThesisScreen: React.FC = () => {
       setLoading(true);
     }
 
-    const result = await fetchVideos(getToken);
+    const result = await fetchVideos();
 
     if (result.error) {
       Alert.alert('Erro', result.error);
