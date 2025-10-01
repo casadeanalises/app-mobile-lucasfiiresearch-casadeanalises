@@ -159,6 +159,8 @@ const CatalogScreen: React.FC = () => {
       <ScrollView 
         style={[styles.content, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
+        bounces={true}
+        contentContainerStyle={styles.scrollContent}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -231,9 +233,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 120,
+  },
   header: {
     paddingTop: 32,
     paddingBottom: 16,
+    alignItems: 'center',
   },
   title: {
     fontSize: 32,
@@ -246,8 +253,8 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
   },
   gridContainer: {
-    gap: 16,
-    marginBottom: 32,
+    gap: 24,
+    marginBottom: 80,
   },
   card: {
     position: 'relative',

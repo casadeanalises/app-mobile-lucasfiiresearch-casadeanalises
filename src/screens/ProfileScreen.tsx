@@ -132,7 +132,12 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
+      <ScrollView 
+        style={[styles.content, { paddingBottom: insets.bottom + 100 }]}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 100 }]}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Meu Perfil</Text>
@@ -140,14 +145,14 @@ const ProfileScreen: React.FC = () => {
 
         {/* Profile Info */}
         <View style={styles.profileSection}>
-          {/* <View style={styles.avatarContainer}>
+          <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
               <Ionicons name="person" size={40} color="#FFFFFF" />
             </View>
             <TouchableOpacity style={styles.editAvatarButton}>
               <Ionicons name="pencil" size={16} color="#FFFFFF" />
             </TouchableOpacity>
-          </View> */}
+          </View>
           
           <Text style={styles.userName}>
             {user?.username || user?.firstName || user?.fullName || 'Usuário'}
@@ -242,8 +247,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 50,
+  },
   header: {
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 30,
     alignItems: 'center',
   },
@@ -254,7 +263,7 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 30,
   },
   avatarContainer: {
     position: 'relative',
@@ -296,7 +305,7 @@ const styles = StyleSheet.create({
   menuSection: {
     backgroundColor: '#1E293B',
     borderRadius: 16,
-    marginBottom: 20,
+    marginBottom: 16,
     overflow: 'hidden',
   },
   menuItem: {
@@ -334,7 +343,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E293B',
     borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   logoutButton: {
     flexDirection: 'row',
