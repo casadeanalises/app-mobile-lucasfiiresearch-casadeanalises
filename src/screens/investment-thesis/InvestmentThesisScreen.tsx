@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '@clerk/clerk-expo';
 import { HomeVideo } from '../../types/video';
@@ -21,6 +22,7 @@ import { VideoModal } from './components/VideoModal';
 
 const InvestmentThesisScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const { getToken } = useAuth();
   
   // Estados
@@ -81,6 +83,15 @@ const InvestmentThesisScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       {/* Header com gradiente */}
       <View style={styles.header}>
+        {/* Botão Voltar */}
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+
         <View style={styles.headerContent}>
           <View style={styles.headerIcon}>
             <Ionicons name="play-circle" size={28} color="#FFFFFF" />
@@ -234,6 +245,17 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     paddingBottom: 16,
     paddingHorizontal: 20,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(51, 65, 85, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(100, 116, 139, 0.5)',
   },
   headerContent: {
     flexDirection: 'row',
