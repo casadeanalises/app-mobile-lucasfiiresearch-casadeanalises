@@ -31,7 +31,7 @@ const ProfileScreen: React.FC = () => {
         <View style={styles.userInfo}>
           <Text style={styles.infoLabel}>Nome:</Text>
           <Text style={styles.infoText}>
-            {user?.firstName} {user?.lastName}
+            {user?.username || user?.firstName || user?.fullName || 'Usuário'}
           </Text>
           
           <Text style={styles.infoLabel}>Email:</Text>

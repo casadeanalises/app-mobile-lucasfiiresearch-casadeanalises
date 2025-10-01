@@ -10,7 +10,7 @@ import { useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen: React.FC = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const insets = useSafeAreaInsets();
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -80,6 +80,27 @@ const HomeScreen: React.FC = () => {
 
   const subscription = getUserSubscription();
 
+  // Mostrar loading enquanto o usuário não foi carregado
+  if (!isLoaded) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
+          <View style={styles.header}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="sparkles" size={24} color="#87CEEB" /> 
+            </View>
+            <View style={styles.greetingContainer}>
+              <Text style={[styles.greeting, { color: '#87CEEB' }]}>
+                {getGreeting()}, <Text style={[styles.userName, { color: '#87CEEB' }]}>carregando...</Text>!
+              </Text>
+              <View style={[styles.greetingUnderline, { backgroundColor: '#87CEEB' }]} />
+            </View>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
@@ -89,9 +110,11 @@ const HomeScreen: React.FC = () => {
             <Ionicons name="sparkles" size={24} color={subscription.hasSubscription ? '#4CAF50' : '#DC3545'} /> 
           </View>
           <View style={styles.greetingContainer}>
-            <Text style={[styles.greeting, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>
-              {getGreeting()}, <Text style={[styles.userName, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>{user?.firstName?.toLowerCase() || 'usuário'}!</Text>
-            </Text>
+              <Text style={[styles.greeting, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>
+                {getGreeting()}, <Text style={[styles.userName, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>
+                  {isLoaded && user ? (user.username || user.firstName || user.fullName || 'usuário').toLowerCase() : 'usuário'}
+                </Text>!
+              </Text>
             <View style={[styles.greetingUnderline, { backgroundColor: subscription.hasSubscription ? '#4CAF50' : '#DC3545' }]} />
           </View>
         </View>

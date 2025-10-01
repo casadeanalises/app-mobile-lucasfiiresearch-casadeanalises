@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   View,
-  Text,
+  // Text,
   StyleSheet,
   SafeAreaView,
   KeyboardAvoidingView,
@@ -14,7 +14,7 @@ import {
 import { useSignIn } from '@clerk/clerk-expo';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import GoogleSignInButton from '../components/GoogleSignInButton';
+// import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
   // const navigation = useNavigation();
