@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Switch,
+  Image,
+  Modal,
+  Linking,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser, useAuth } from '@clerk/clerk-expo';
@@ -21,8 +24,9 @@ const ProfileScreen: React.FC = () => {
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricType, setBiometricType] = useState('Biometria');
+  const [showUserProfile, setShowUserProfile] = useState(false);
 
-  // Verificar status da biometria ao carregar
+  // Verificar status da biometria
   useEffect(() => {
     const checkBiometricStatus = async () => {
       const available = await BiometricService.isAvailable();
@@ -44,6 +48,27 @@ const ProfileScreen: React.FC = () => {
       Alert.alert('Erro', 'Falha ao sair da conta');
     }
   };
+
+
+  const handleEditPhoto = () => {
+    Alert.alert(
+      'Editar Foto',
+      'Para editar sua foto de perfil, acesse o site Lucas FII Research',
+      [
+        {
+          text: 'Abrir no Site',
+          onPress: () => {
+            Linking.openURL('https://lucasfiiresearch.com.br');
+          },
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+      ]
+    );
+  };
+
 
   const handleBiometricToggle = async (value: boolean) => {
     if (value) {
@@ -83,26 +108,14 @@ const ProfileScreen: React.FC = () => {
       id: 'edit-profile',
       title: 'Editar Perfil',
       icon: 'person-outline',
-      onPress: () => Alert.alert(
-        'Editar Perfil',
-        'Para editar seu perfil, acesse o site Lucas FII Research em lucasfiiresearch.com.br',
-        [
-          { text: 'Entendi', style: 'default' }
-        ]
-      ),
+      onPress: () => setShowUserProfile(true),
     },
-    {
-      id: 'change-password',
-      title: 'Alterar Senha',
-      icon: 'lock-closed-outline',
-      onPress: () => Alert.alert(
-        'Alterar Senha',
-        'Para alterar sua senha, acesse o site Lucas FII Research em lucasfiiresearch.com.br',
-        [
-          { text: 'Entendi', style: 'default' }
-        ]
-      ),
-    },
+    // {
+    //   id: 'change-password',
+    //   title: 'Alterar Senha',
+    //   icon: 'lock-closed-outline',
+    //   onPress: () => setShowUserProfile(true),
+    // },
     {
       id: 'notifications',
       title: 'Notificações',
@@ -113,15 +126,15 @@ const ProfileScreen: React.FC = () => {
       id: 'biometric',
       title: 'Acesso por Biometria',
       icon: 'finger-print-outline',
-      onPress: () => {}, // Será tratado separadamente
+      onPress: () => {}, 
       isToggle: true,
     },
-    {
-      id: 'settings',
-      title: 'Configurações',
-      icon: 'settings-outline',
-      onPress: () => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento'),
-    },
+    // {
+    //   id: 'settings',
+    //   title: 'Configurações',
+    //   icon: 'settings-outline',
+    //   onPress: () => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento'),
+    // },
     {
       id: 'about',
       title: 'Sobre o App',
@@ -145,14 +158,13 @@ const ProfileScreen: React.FC = () => {
 
         {/* Profile Info */}
         <View style={styles.profileSection}>
-          <View style={styles.avatarContainer}>
-            <View style={styles.avatar}>
+          <TouchableOpacity style={styles.avatar} onPress={handleEditPhoto}>
+            {user?.imageUrl ? (
+              <Image source={{ uri: user.imageUrl }} style={styles.avatarImage} />
+            ) : (
               <Ionicons name="person" size={40} color="#FFFFFF" />
-            </View>
-            <TouchableOpacity style={styles.editAvatarButton}>
-              <Ionicons name="pencil" size={16} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+            )}
+          </TouchableOpacity>
           
           <Text style={styles.userName}>
             {user?.username || user?.firstName || user?.fullName || 'Usuário'}
@@ -234,6 +246,82 @@ const ProfileScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Modal para gerenciar conta */}
+      <Modal
+        visible={showUserProfile}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowUserProfile(false)}
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Gerenciar Conta</Text>
+            <TouchableOpacity
+              onPress={() => setShowUserProfile(false)}
+              style={styles.modalCloseButton}
+            >
+              <Ionicons name="close" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+          
+          <ScrollView style={styles.modalContent}>
+            <View style={styles.modalSection}>
+              <Text style={styles.modalSectionTitle}>Editar Perfil</Text>
+              <Text style={styles.modalSectionDescription}>
+                Para editar seu perfil, alterar foto, nome e informações pessoais
+              </Text>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setShowUserProfile(false);
+                  Linking.openURL('https://lucasfiiresearch.com.br');
+                }}
+              >
+                <Ionicons name="person-outline" size={20} color="#3B82F6" />
+                <Text style={styles.modalButtonText}>Abrir no Site</Text>
+                <Ionicons name="open-outline" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalSection}>
+              <Text style={styles.modalSectionTitle}>Segurança</Text>
+              <Text style={styles.modalSectionDescription}>
+                Para alterar senha, gerenciar autenticação e configurações de segurança
+              </Text>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setShowUserProfile(false);
+                  Linking.openURL('https://lucasfiiresearch.com.br');
+                }}
+              >
+                <Ionicons name="shield-checkmark-outline" size={20} color="#3B82F6" />
+                <Text style={styles.modalButtonText}>Abrir no Site</Text>
+                <Ionicons name="open-outline" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalSection}>
+              <Text style={styles.modalSectionTitle}>Conta Conectada</Text>
+              <Text style={styles.modalSectionDescription}>
+                Para gerenciar conta do Google
+              </Text>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setShowUserProfile(false);
+                  Linking.openURL('https://lucasfiiresearch.com.br');
+                }}
+              >
+                <Ionicons name="link-outline" size={20} color="#3B82F6" />
+                <Text style={styles.modalButtonText}>Abrir no Site</Text>
+                <Ionicons name="open-outline" size={16} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -265,10 +353,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  avatarContainer: {
-    position: 'relative',
-    marginBottom: 16,
-  },
   avatar: {
     width: 80,
     height: 80,
@@ -278,19 +362,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 3,
     borderColor: '#1E293B',
+    overflow: 'hidden',
+    marginBottom: 16,
   },
-  editAvatarButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#1E293B',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#3B82F6',
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 40,
   },
   userName: {
     fontSize: 20,
@@ -368,6 +446,69 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#EF4444',
     marginTop: 2,
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#0F172A',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(148, 163, 184, 0.1)',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  modalCloseButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#1E293B',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  modalSection: {
+    marginTop: 24,
+  },
+  modalSectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  modalSectionDescription: {
+    fontSize: 14,
+    color: '#94A3B8',
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  modalButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1E293B',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.2)',
+  },
+  modalButtonText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#FFFFFF',
+    marginLeft: 12,
+    fontWeight: '500',
   },
 });
 
