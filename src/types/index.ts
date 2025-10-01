@@ -21,6 +21,7 @@ export type MainTabParamList = {
   Home: undefined;
   Catalog: undefined;
   Profile: undefined;
+  Notifications: undefined;
 };
 
 export type CatalogStackParamList = {

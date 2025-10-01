@@ -16,10 +16,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser, useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { BiometricService } from '../services/biometric';
+// import { useNavigation } from '@react-navigation/native';
+// import { MainTabParamList } from '../types';
+// import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 const ProfileScreen: React.FC = () => {
   const { user } = useUser();
   const { signOut } = useAuth();
+  // const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
   const insets = useSafeAreaInsets();
   const [biometricEnabled, setBiometricEnabled] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
@@ -116,12 +120,13 @@ const ProfileScreen: React.FC = () => {
     //   icon: 'lock-closed-outline',
     //   onPress: () => setShowUserProfile(true),
     // },
-    {
-      id: 'notifications',
-      title: 'Notificações',
-      icon: 'notifications-outline',
-      onPress: () => Alert.alert('Em breve', 'Funcionalidade em desenvolvimento'),
-    },
+    
+    // {
+    //   id: 'notifications',
+    //   title: 'Notificações',
+    //   icon: 'notifications-outline',
+    //   onPress: () => navigation.navigate('Notifications'),
+    // },
     {
       id: 'biometric',
       title: 'Acesso por Biometria',

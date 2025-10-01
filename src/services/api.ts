@@ -1,6 +1,7 @@
 import { HomeVideo } from '../types/video';
 import { Report } from '../screens/weekly-reports/types';
 import { EtfReport } from '../screens/etf-reports/types';
+import { Notification } from '../screens/notifications/types';
 
 const API_BASE_URL = 'https://lucasfiiresearch.dev.br';
 
@@ -258,5 +259,45 @@ export const fetchEtfReports = async (): Promise<ApiResponse<EtfReport[]>> => {
   } catch (error) {
     console.error('❌ Erro ao buscar ETFs:', error);
     return { error: `Erro ao carregar ETFs: ${error instanceof Error ? error.message : 'Tente novamente'}` };
+  }
+};
+
+// Buscar notificações
+export const fetchNotifications = async (userId: string): Promise<ApiResponse<Notification[]>> => {
+  try {
+    const endpoint = `${API_BASE_URL}/api/notifications?userId=${encodeURIComponent(userId)}`;
+    
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    let notificationsArray: Notification[] = [];
+    if (Array.isArray(result)) {
+      notificationsArray = result;
+    } else {
+      console.error('❌ Formato de resposta inválido:', result);
+      return { error: 'Formato de resposta inválido' };
+    }
+
+    // Ordenar por data de criação (mais recentes primeiro)
+    const sortedNotifications = notificationsArray.sort((a: Notification, b: Notification) => {
+      const dateA = new Date(a.createdAt || '').getTime();
+      const dateB = new Date(b.createdAt || '').getTime();
+      return dateB - dateA;
+    });
+
+    return { data: sortedNotifications };
+  } catch (error) {
+    console.error('❌ Erro ao carregar notificações:', error);
+    return { error: `Erro ao carregar notificações: ${error instanceof Error ? error.message : 'Tente novamente'}` };
   }
 };

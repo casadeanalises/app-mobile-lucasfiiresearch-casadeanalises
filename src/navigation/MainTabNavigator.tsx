@@ -6,6 +6,7 @@ import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/HomeScreen';
 import CatalogStackNavigator from './CatalogStackNavigator';
 import ProfileScreen from '../screens/ProfileScreen';
+import NotificationsScreen from '../screens/notifications/NotificationsScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -24,6 +25,8 @@ const MainTabNavigator: React.FC = () => {
             iconName = focused ? 'grid' : 'grid-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
+          } else if (route.name === 'Notifications') {
+            iconName = focused ? 'notifications' : 'notifications-outline';
           } else {
             iconName = 'help-outline';
           }
@@ -70,6 +73,13 @@ const MainTabNavigator: React.FC = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Perfil',
+        }}
+      />
+      <Tab.Screen 
+        name="Notifications" 
+        component={NotificationsScreen}
+        options={{
+          tabBarLabel: 'Notificações',
         }}
       />
     </Tab.Navigator>

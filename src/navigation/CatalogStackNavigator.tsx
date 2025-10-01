@@ -9,6 +9,7 @@ export type CatalogStackParamList = {
   CatalogHome: undefined;
   InvestmentThesis: undefined;
   WeeklyReports: undefined;
+  EtfReports: undefined;
 };
 
 const Stack = createStackNavigator<CatalogStackParamList>();
@@ -35,15 +36,15 @@ const CatalogStackNavigator: React.FC = () => {
                  animation: 'slide_from_right',
                }}
              />
-             <Stack.Screen 
-               name="EtfReports" 
-               component={EtfReportsScreen}
-               options={{
-                 animation: 'slide_from_right',
-               }}
-             />
-    </Stack.Navigator>
-  );
-};
+        <Stack.Screen
+          name="EtfReports"
+          component={EtfReportsScreen}
+          options={{
+            animation: 'slide_from_right',
+          }}
+        />
+      </Stack.Navigator>
+    );
+  };
 
 export default CatalogStackNavigator;
