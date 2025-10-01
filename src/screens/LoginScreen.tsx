@@ -9,15 +9,15 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useSignIn } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
+import { useSignIn } from '@clerk/clerk-expo';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
-  const { signIn, setActive, isLoaded } = useSignIn();
   const navigation = useNavigation();
+  const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -50,6 +50,7 @@ const LoginScreen: React.FC = () => {
 
     setLoading(true);
     try {
+      // Tentar fazer login com o Clerk
       const result = await signIn.create({
         identifier: email,
         password,
@@ -57,7 +58,7 @@ const LoginScreen: React.FC = () => {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId });
-        // O Clerk redireciona automaticamente para Home
+        // A navegação será automática devido ao estado isSignedIn no AppNavigator
       } else {
         Alert.alert('Erro', 'Falha no login. Tente novamente.');
       }

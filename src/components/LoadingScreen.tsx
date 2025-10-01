@@ -104,7 +104,7 @@ const LoadingScreen: React.FC = () => {
         </Animated.View>
 
         <Animated.View style={[styles.textContainer, { opacity: fadeAnim }]}>
-          <Text style={styles.appName}>Lucas Fii Research</Text>
+          <Text style={styles.appName}>Lucas FII Research</Text>
           <Text style={styles.loadingText}>Carregando...</Text>
         </Animated.View>
 
@@ -123,7 +123,7 @@ const LoadingScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#060d6f',
   },
   content: {
     flex: 1,
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 120,
     height: 120,
+    borderRadius: 250,
   },
   textContainer: {
     alignItems: 'center',
@@ -147,12 +148,12 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   loadingText: {
     fontSize: 16,
-    color: '#8E8E93',
+    color: '#B0B0B0',
   },
   dotsContainer: {
     alignItems: 'center',

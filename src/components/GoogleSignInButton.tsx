@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useOAuth } from '@clerk/clerk-expo';
 
@@ -12,9 +12,11 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   onError,
 }) => {
   const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' });
+  const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
     try {
+      setLoading(true);
       const { createdSessionId, setActive } = await startOAuthFlow();
 
       if (createdSessionId && setActive) {
@@ -26,12 +28,20 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       const errorMessage = err.errors?.[0]?.message || 'Erro no login com Google';
       onError?.(errorMessage);
       Alert.alert('Erro', errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <TouchableOpacity style={styles.button} onPress={handleGoogleSignIn}>
-      <Text style={styles.buttonText}>Entrar com Google</Text>
+    <TouchableOpacity 
+      style={[styles.button, loading && styles.buttonDisabled]} 
+      onPress={handleGoogleSignIn}
+      disabled={loading}
+    >
+      <Text style={styles.buttonText}>
+        {loading ? 'Carregando...' : 'Entrar com Google'}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -48,6 +58,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     minHeight: 44,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#000000',
