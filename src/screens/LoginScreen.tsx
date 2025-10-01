@@ -23,15 +23,12 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [loginType, setLoginType] = useState<'email' | 'username'>('email');
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!email.trim()) {
-      newErrors.email = loginType === 'email' ? 'Email é obrigatório' : 'Username é obrigatório';
-    } else if (loginType === 'email' && !/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = 'Email ou Nome de usuário é obrigatório';
     }
 
     if (!password.trim()) {
@@ -92,27 +89,12 @@ const LoginScreen: React.FC = () => {
             </View>
 
             <View style={styles.form}>
-              <View style={styles.loginTypeContainer}>
-                <Button
-                  title="Email"
-                  onPress={() => setLoginType('email')}
-                  variant={loginType === 'email' ? 'primary' : 'outline'}
-                  size="small"
-                />
-                <Button
-                  title="Username"
-                  onPress={() => setLoginType('username')}
-                  variant={loginType === 'username' ? 'primary' : 'outline'}
-                  size="small"
-                />
-              </View>
-
               <Input
-                label={loginType === 'email' ? 'Email' : 'Username'}
+                label="Email ou Nome de usuário"
                 value={email}
                 onChangeText={setEmail}
-                placeholder={loginType === 'email' ? 'Digite seu email' : 'Digite seu username'}
-                keyboardType={loginType === 'email' ? 'email-address' : 'default'}
+                placeholder="Digite seu email ou nome de usuário"
+                keyboardType="default"
                 error={errors.email}
                 theme="dark"
               />
@@ -183,11 +165,6 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 16,
-  },
-  loginTypeContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 8,
   },
   divider: {
     flexDirection: 'row',
