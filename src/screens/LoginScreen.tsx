@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
-  // Text,
+  Text,
   StyleSheet,
   SafeAreaView,
   KeyboardAvoidingView,
@@ -9,11 +9,14 @@ import {
   ScrollView,
   Alert,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 // import { useNavigation } from '@react-navigation/native';
 import { useSignIn } from '@clerk/clerk-expo';
+import { Ionicons } from '@expo/vector-icons';
 import Button from '../components/Button';
 import Input from '../components/Input';
+import { BiometricService } from '../services/biometric';
 // import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
@@ -23,6 +26,71 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricType, setBiometricType] = useState('Biometria');
+
+  // Verificar biometria ao carregar
+  useEffect(() => {
+    const checkBiometricStatus = async () => {
+      const available = await BiometricService.isAvailable();
+      const enabled = await BiometricService.isEnabled();
+      const type = await BiometricService.getBiometricType();
+      
+      setBiometricAvailable(available);
+      setBiometricEnabled(enabled);
+      setBiometricType(type);
+    };
+
+    checkBiometricStatus();
+  }, []);
+
+  const handleBiometricLogin = async () => {
+    try {
+      setLoading(true);
+      
+      // Verificar se há credenciais salvas primeiro
+      const credentials = await BiometricService.getCredentials();
+      
+      if (!credentials) {
+        Alert.alert(
+          'Credenciais não encontradas',
+          'Faça login manualmente primeiro para salvar suas credenciais.',
+          [{ text: 'Entendi', style: 'default' }]
+        );
+        return;
+      }
+      
+      // Autenticar com biometria
+      const biometricResult = await BiometricService.authenticateWithBiometric();
+      
+      if (biometricResult.success) {
+        // Fazer login com as credenciais salvas
+        if (!signIn) {
+          Alert.alert('Erro', 'Sistema de login não disponível');
+          return;
+        }
+        
+        const result = await signIn.create({
+          identifier: credentials.email,
+          password: credentials.password,
+        });
+
+        if (result?.status === 'complete') {
+          await setActive({ session: result.createdSessionId });
+        } else {
+          Alert.alert('Erro', 'Falha na autenticação biométrica');
+        }
+      } else {
+        Alert.alert('Erro', biometricResult.error || 'Falha na autenticação biométrica');
+      }
+    } catch (error) {
+      console.error('Erro no login biométrico:', error);
+      Alert.alert('Erro', 'Falha na autenticação biométrica');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -56,6 +124,11 @@ const LoginScreen: React.FC = () => {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId });
+        
+        // Salvar credenciais sempre que o login for bem-sucedido
+        // (para permitir uso futuro da biometria)
+        await BiometricService.saveCredentials(email, password);
+        
         // A navegação será automática devido ao estado isSignedIn no AppNavigator
       } else {
         Alert.alert('Erro', 'Falha no login. Tente novamente.');
@@ -116,6 +189,20 @@ const LoginScreen: React.FC = () => {
                 disabled={loading}
               />
 
+              {/* Botão de Biometria */}
+              {biometricAvailable && biometricEnabled && (
+                <TouchableOpacity
+                  style={styles.biometricButton}
+                  onPress={handleBiometricLogin}
+                  disabled={loading}
+                >
+                  <Ionicons name="finger-print" size={24} color="#3B82F6" />
+                  <Text style={styles.biometricButtonText}>
+                    Autenticação Biométrica
+                  </Text>
+                </TouchableOpacity>
+              )}
+
               {/* <Button
                 title="Criar conta"
                 onPress={handleSignUp}
@@ -166,6 +253,24 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: 16,
+  },
+  biometricButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderWidth: 1,
+    borderColor: '#3B82F6',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  biometricButtonText: {
+    color: '#3B82F6',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   divider: {
     flexDirection: 'row',
