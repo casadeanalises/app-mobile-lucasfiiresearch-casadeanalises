@@ -8,15 +8,16 @@ import {
   Platform,
   ScrollView,
   Alert,
+  Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+// import { useNavigation } from '@react-navigation/native';
 import { useSignIn } from '@clerk/clerk-expo';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,9 +71,9 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const handleSignUp = () => {
-    navigation.navigate('SignUp' as never);
-  };
+  // const handleSignUp = () => {
+  //   navigation.navigate('SignUp' as never);
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,10 +83,13 @@ const LoginScreen: React.FC = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
-            <Text style={styles.title}>Bem-vindo de volta!</Text>
-            <Text style={styles.subtitle}>
-              Faça login para acessar sua conta
-            </Text>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../../assets/logo_2.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
 
             <View style={styles.form}>
               <View style={styles.loginTypeContainer}>
@@ -110,6 +114,7 @@ const LoginScreen: React.FC = () => {
                 placeholder={loginType === 'email' ? 'Digite seu email' : 'Digite seu username'}
                 keyboardType={loginType === 'email' ? 'email-address' : 'default'}
                 error={errors.email}
+                theme="dark"
               />
 
               <Input
@@ -119,6 +124,7 @@ const LoginScreen: React.FC = () => {
                 placeholder="Digite sua senha"
                 secureTextEntry
                 error={errors.password}
+                theme="dark"
               />
 
               <Button
@@ -128,11 +134,11 @@ const LoginScreen: React.FC = () => {
                 disabled={loading}
               />
 
-              <Button
+              {/* <Button
                 title="Criar conta"
                 onPress={handleSignUp}
                 variant="outline"
-              />
+              /> */}
 
               <View style={styles.divider}>
                 <View style={styles.dividerLine} />
@@ -152,7 +158,7 @@ const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#060e6f',
   },
   keyboardView: {
     flex: 1,
@@ -166,18 +172,14 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000000',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#8E8E93',
-    textAlign: 'center',
+  logoContainer: {
+    alignItems: 'center',
     marginBottom: 48,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    borderRadius: 250,
   },
   form: {
     gap: 16,
@@ -195,11 +197,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#D1D1D6',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   dividerText: {
     marginHorizontal: 16,
-    color: '#8E8E93',
+    color: '#FFFFFF',
     fontSize: 14,
   },
 });

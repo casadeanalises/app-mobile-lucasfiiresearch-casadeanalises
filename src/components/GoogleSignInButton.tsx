@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert, Image, View } from 'react-native';
 import { useOAuth } from '@clerk/clerk-expo';
 
 interface GoogleSignInButtonProps {
@@ -39,9 +39,17 @@ const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       onPress={handleGoogleSignIn}
       disabled={loading}
     >
-      <Text style={styles.buttonText}>
-        {loading ? 'Carregando...' : 'Entrar com Google'}
-      </Text>
+      <View style={styles.buttonContent}>
+        {!loading && (
+          <Image
+            source={{ uri: 'https://www.google.com/favicon.ico' }}
+            style={styles.googleIcon}
+          />
+        )}
+        <Text style={styles.buttonText}>
+          {loading ? 'Carregando...' : 'Entrar com Google'}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -56,11 +64,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
     minHeight: 44,
   },
   buttonDisabled: {
     opacity: 0.6,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 12,
   },
   buttonText: {
     color: '#000000',
