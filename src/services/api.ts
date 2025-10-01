@@ -1,5 +1,6 @@
 import { HomeVideo } from '../types/video';
 import { Report } from '../screens/weekly-reports/types';
+import { EtfReport } from '../screens/etf-reports/types';
 
 const API_BASE_URL = 'https://lucasfiiresearch.dev.br';
 
@@ -182,5 +183,80 @@ export const fetchReports = async (): Promise<ApiResponse<Report[]>> => {
   } catch (error) {
     console.error('❌ Erro ao buscar relatórios:', error);
     return { error: `Erro ao carregar relatórios: ${error instanceof Error ? error.message : 'Tente novamente'}` };
+  }
+};
+
+/**
+ * Busca todos os relatórios de ETFs em PDF
+ */
+export const fetchEtfReports = async (): Promise<ApiResponse<EtfReport[]>> => {
+  try {
+    // Usando API pública de ETFs PDFs (não requer autenticação)
+    const endpoint = `${API_BASE_URL}/api/etf-pdfs`;
+    console.log('📡 Fazendo requisição para:', endpoint);
+
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('📥 Status da resposta (ETFs):', response.status);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Erro na resposta:', errorText);
+      
+      if (response.status === 401) {
+        return { error: 'Não autorizado - Faça login novamente' };
+      }
+      if (response.status === 403) {
+        return { error: 'Necessário ter um plano ativo' };
+      }
+      return { error: `Erro ${response.status}: ${errorText.substring(0, 100)}` };
+    }
+
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await response.text();
+      console.error('❌ Resposta não é JSON:', text.substring(0, 200));
+      return { error: 'Resposta inválida do servidor' };
+    }
+
+    const result = await response.json();
+    console.log('✅ ETFs recebidos:', JSON.stringify(result).substring(0, 500));
+    
+    let etfReportsArray: EtfReport[] = [];
+    
+    if (result.pdfs && Array.isArray(result.pdfs)) {
+      etfReportsArray = result.pdfs;
+    } else if (result.etf_pdfs && Array.isArray(result.etf_pdfs)) {
+      etfReportsArray = result.etf_pdfs;
+    } else if (result.etfs && Array.isArray(result.etfs)) {
+      etfReportsArray = result.etfs;
+    } else if (Array.isArray(result)) {
+      etfReportsArray = result;
+    } else {
+      console.error('❌ Formato de resposta inválido:', result);
+      return { error: 'Formato de resposta inválido' };
+    }
+
+    console.log('📦 Total de ETFs encontrados:', etfReportsArray.length);
+
+    // Filtrar apenas ETFs ativos e ordenar por data
+    const activeEtfs = etfReportsArray
+      .filter((etf: EtfReport) => etf.active)
+      .sort((a: EtfReport, b: EtfReport) => {
+        const dateA = new Date(a.createdAt || '').getTime();
+        const dateB = new Date(b.createdAt || '').getTime();
+        return dateB - dateA;
+      });
+
+    console.log('✅ ETFs ativos:', activeEtfs.length);
+    return { data: activeEtfs };
+  } catch (error) {
+    console.error('❌ Erro ao buscar ETFs:', error);
+    return { error: `Erro ao carregar ETFs: ${error instanceof Error ? error.message : 'Tente novamente'}` };
   }
 };

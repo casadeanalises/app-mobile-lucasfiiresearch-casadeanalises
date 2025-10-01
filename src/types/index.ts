@@ -27,6 +27,7 @@ export type CatalogStackParamList = {
   CatalogHome: undefined;
   InvestmentThesis: undefined;
   WeeklyReports: undefined;
+  EtfReports: undefined;
 };
 
 // Tipos de autenticação

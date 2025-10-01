@@ -42,16 +42,6 @@ const CatalogScreen: React.FC = () => {
     setHasActivePlan(hasPlan);
   }, [user]);
 
-  // Função para mostrar alerta de plano necessário
-  const showPlanRequiredAlert = () => {
-    Alert.alert(
-      'Plano Necessário',
-      'Você precisa de um plano ativo para acessar este conteúdo. Acesse o site lucasfiiresearch.com.br para adquirir seu plano.',
-      [
-        { text: 'Entendi', style: 'default' }
-      ]
-    );
-  };
   
   const catalogItems = [
     {
@@ -62,13 +52,32 @@ const CatalogScreen: React.FC = () => {
       color: '#F59E0B',
       gradient: ['rgba(245, 158, 11, 0.2)', 'rgba(245, 158, 11, 0.1)'],
       onPress: () => {
-        // Verificar plano em tempo real (evita race condition)
-        const currentPlan = getUserSubscription();
+        // Debug: verificar dados do usuário
+        console.log('🔍 Dados do usuário:', JSON.stringify(user?.publicMetadata, null, 2));
         
-        if (currentPlan) {
+        // Verificar se tem plano básico ou anual (podem acessar tudo)
+        const publicMetadata = user?.publicMetadata as any;
+        const subscriptionPlan = publicMetadata?.subscriptionPlan;
+        const planType = publicMetadata?.planType;
+        
+        console.log('📋 subscriptionPlan:', subscriptionPlan);
+        console.log('📋 planType:', planType);
+        
+        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' || 
+                                   subscriptionPlan === 'annualbasic' ||
+                                   planType === 'basic' || 
+                                   planType === 'annual';
+        
+        console.log('✅ Tem plano básico/anual:', hasBasicOrAnnualPlan);
+        
+        if (hasBasicOrAnnualPlan) {
           navigation.navigate('InvestmentThesis');
         } else {
-          showPlanRequiredAlert();
+          Alert.alert(
+            'Plano Necessário',
+            'Para acessar as teses de investimento, você precisa do plano Basic ou Annual. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
+            [{ text: 'Entendi', style: 'default' }]
+          );
         }
       },
     },
@@ -80,13 +89,55 @@ const CatalogScreen: React.FC = () => {
       color: '#8B5CF6',
       gradient: ['rgba(139, 92, 246, 0.2)', 'rgba(139, 92, 246, 0.1)'],
       onPress: () => {
-        // Verificar plano em tempo real (evita race condition)
-        const currentPlan = getUserSubscription();
+        // Verificar se tem plano básico ou anual (podem acessar tudo)
+        const publicMetadata = user?.publicMetadata as any;
+        const subscriptionPlan = publicMetadata?.subscriptionPlan;
+        const planType = publicMetadata?.planType;
         
-        if (currentPlan) {
+        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' || 
+                                   subscriptionPlan === 'annualbasic' ||
+                                   planType === 'basic' || 
+                                   planType === 'annual';
+        
+        if (hasBasicOrAnnualPlan) {
           navigation.navigate('WeeklyReports');
         } else {
-          showPlanRequiredAlert();
+          Alert.alert(
+            'Plano Necessário',
+            'Para acessar os relatórios semanais, você precisa do plano Basic ou Annual. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
+            [{ text: 'Entendi', style: 'default' }]
+          );
+        }
+      },
+    },
+    {
+      id: 'etf-reports',
+      title: 'ETFs Relatórios em PDFs',
+      description: 'Acesse relatórios e análises de ETFs em PDF',
+      icon: 'trending-up' as const,
+      color: '#10B981',
+      gradient: ['rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0.1)'],
+      onPress: () => {
+        // Verificar se tem plano básico, anual ou etfs_wallet
+        const publicMetadata = user?.publicMetadata as any;
+        const subscriptionPlan = publicMetadata?.subscriptionPlan;
+        const planType = publicMetadata?.planType;
+        
+        const hasValidPlan = subscriptionPlan === 'basic' || 
+                           subscriptionPlan === 'annualbasic' ||
+                           subscriptionPlan === 'etfs_wallet' ||
+                           planType === 'basic' || 
+                           planType === 'annual' ||
+                           planType === 'etfs_wallet';
+        
+        if (hasValidPlan) {
+          navigation.navigate('EtfReports');
+        } else {
+          Alert.alert(
+            'Plano Necessário',
+            'Para acessar os relatórios de ETFs, você precisa do plano Basic, Annual ou ETFs Wallet. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
+            [{ text: 'Entendi', style: 'default' }]
+          );
         }
       },
     },
