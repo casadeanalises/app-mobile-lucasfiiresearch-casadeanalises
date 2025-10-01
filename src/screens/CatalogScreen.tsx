@@ -83,8 +83,8 @@ const CatalogScreen: React.FC = () => {
     },
     {
       id: 'weekly-reports',
-      title: 'Relatórios Semanais PDFs',
-      description: 'Acesse análises detalhadas e relatórios em PDF',
+      title: 'Relatório Semanal',
+      description: 'Acesse análises detalhadas e relatórios em PDFs',
       icon: 'document-text' as const,
       color: '#8B5CF6',
       gradient: ['rgba(139, 92, 246, 0.2)', 'rgba(139, 92, 246, 0.1)'],
@@ -112,9 +112,9 @@ const CatalogScreen: React.FC = () => {
     },
     {
       id: 'etf-reports',
-      title: 'ETFs Relatórios em PDFs',
-      description: 'Acesse relatórios e análises de ETFs em PDF',
-      icon: 'trending-up' as const,
+      title: 'ETFs',
+      description: 'Relatórios em PDFs - Acesse relatórios e análises de ETFs em PDF',
+      icon: 'document-text' as const,
       color: '#10B981',
       gradient: ['rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0.1)'],
       onPress: () => {

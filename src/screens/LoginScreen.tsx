@@ -122,13 +122,14 @@ const LoginScreen: React.FC = () => {
                 variant="outline"
               /> */}
 
-              <View style={styles.divider}>
+              {/* <View style={styles.divider}>
                 <View style={styles.dividerLine} />
                 <Text style={styles.dividerText}>ou</Text>
                 <View style={styles.dividerLine} />
-              </View>
+              </View> */}
 
-              <GoogleSignInButton />
+              {/* <GoogleSignInButton /> */}
+
             </View>
           </View>
         </ScrollView>
