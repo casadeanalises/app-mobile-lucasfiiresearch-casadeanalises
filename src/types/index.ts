@@ -14,9 +14,18 @@ export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   VerifyEmail: undefined;
+  MainTabs: undefined;
+};
+
+export type MainTabParamList = {
   Home: undefined;
+  Catalog: undefined;
   Profile: undefined;
-  Settings: undefined;
+};
+
+export type CatalogStackParamList = {
+  CatalogHome: undefined;
+  InvestmentThesis: undefined;
 };
 
 // Tipos de autenticação
