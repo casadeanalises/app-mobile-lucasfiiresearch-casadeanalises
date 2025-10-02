@@ -48,7 +48,7 @@ const HomeScreen: React.FC = () => {
     switch (type) {
       case 'basic': return 'Básica (Mensal)';
       case 'annualbasic': return 'Básica (Anual)';
-      case 'etfs_wallet': return 'ETFs Wallet';
+      case 'etfs_wallet': return 'ETFs';
       case 'lowcost': return 'Low Cost';
       default: return 'Plano Gratuito';
     }
@@ -135,34 +135,38 @@ const HomeScreen: React.FC = () => {
 
           <View style={styles.planSection}>
             <View style={[
-              styles.planButton,
-              { backgroundColor: subscription.hasSubscription ? 'rgba(76, 175, 80, 0.1)' : 'rgba(220, 53, 69, 0.1)' }
+              styles.planCard,
+              { 
+                backgroundColor: subscription.hasSubscription ? 'rgba(76, 175, 80, 0.1)' : 'rgba(220, 53, 69, 0.1)',
+                borderColor: subscription.hasSubscription ? 'rgba(76, 175, 80, 0.3)' : 'rgba(220, 53, 69, 0.3)'
+              }
             ]}>
-              <Ionicons
-                name={subscription.hasSubscription ? "star" : "lock-closed"}
-                size={20}
-                color={subscription.hasSubscription ? "#4CAF50" : "#DC3545"}
-              />
-              <Text style={[
-                styles.planText,
-                { color: subscription.hasSubscription ? "#4CAF50" : "#DC3545" }
-              ]}>
-                Seu plano atual
-              </Text>
-              <Text style={[
-                styles.planName,
-                { color: subscription.hasSubscription ? "#4CAF50" : "#DC3545" }
-              ]}>
-                {subscription.hasSubscription ? subscription.displayName : 'Não possui um plano ativo'}
-              </Text>
-              {subscription.hasSubscription && (
+              <View style={styles.planHeader}>
                 <View style={[
-                  styles.planBadge,
-                  { backgroundColor: 'rgba(76, 175, 80, 0.2)' }
+                  styles.planIcon,
+                  { backgroundColor: subscription.hasSubscription ? 'rgba(76, 175, 80, 0.2)' : 'rgba(220, 53, 69, 0.2)' }
                 ]}>
-                  <Text style={styles.planBadgeText}>ATIVO</Text>
+                  <Ionicons 
+                    name={subscription.hasSubscription ? "star" : "lock-closed"} 
+                    size={24} 
+                    color={subscription.hasSubscription ? "#4CAF50" : "#DC3545"} 
+                  />
                 </View>
-              )}
+                <View style={styles.planInfo}>
+                  <Text style={styles.planLabel}>Seu plano atual</Text>
+                  <Text style={[
+                    styles.planName,
+                    { color: subscription.hasSubscription ? "#4CAF50" : "#DC3545" }
+                  ]}>
+                    {subscription.hasSubscription ? subscription.displayName : 'Não possui um plano ativo'}
+                  </Text>
+                </View>
+                {subscription.hasSubscription && (
+                  <View style={styles.planBadge}>
+                    <Text style={styles.planBadgeText}>ATIVO</Text>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
         </View>
@@ -314,35 +318,55 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#FFFFFF',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   planSection: {
     marginTop: 24,
   },
-  planButton: {
+  planCard: {
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  planHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+  },
+  planIcon: {
+    width: 48,
+    height: 48,
     borderRadius: 12,
-    gap: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
   },
-  planText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  planName: {
-    fontSize: 14,
-    fontWeight: 'bold',
+  planInfo: {
     flex: 1,
   },
+  planLabel: {
+    fontSize: 12,
+    color: '#94A3B8',
+    marginBottom: 4,
+  },
+  planName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   planBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 16,
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
   planBadgeText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#FFFFFF',
   },
   quickAccessSection: {
     marginTop: 32,
