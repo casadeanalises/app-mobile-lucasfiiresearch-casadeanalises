@@ -14,14 +14,13 @@ export type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
   VerifyEmail: undefined;
-  MainTabs: undefined;
+  Root: undefined;
 };
 
 export type MainTabParamList = {
   Home: undefined;
   Catalog: undefined;
-  Profile: undefined;
-  Notifications: undefined;
+  Products: undefined;
 };
 
 export type CatalogStackParamList = {

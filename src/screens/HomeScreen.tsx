@@ -4,7 +4,10 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUser } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 const HomeScreen: React.FC = () => {
   const { user, isLoaded } = useUser();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // Atualizar hora a cada segundo
@@ -102,76 +106,119 @@ const HomeScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
-        {/* Header com ícone e saudação */}
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Ionicons name="sparkles" size={24} color={subscription.hasSubscription ? '#4CAF50' : '#DC3545'} /> 
-          </View>
-          <View style={styles.greetingContainer}>
-              <Text style={[styles.greeting, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>
-                {getGreeting()}, <Text style={[styles.userName, { color: subscription.hasSubscription ? '#4CAF50' : '#87CEEB' }]}>
-                  {isLoaded && user ? (user.username || user.firstName || user.fullName || 'usuário').toLowerCase() : 'usuário'}
-                </Text>!
-              </Text>
-            <View style={[styles.greetingUnderline, { backgroundColor: subscription.hasSubscription ? '#4CAF50' : '#DC3545' }]} />
-          </View>
-        </View>
+    <View style={styles.container}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
+      >
 
-        {/* Mensagem de boas-vindas */}
-        <View style={styles.welcomeSection}>
-          <View style={[styles.welcomeLine, { backgroundColor: subscription.hasSubscription ? '#4CAF50' : '#DC3545' }]} />
+        {/* Card de boas-vindas e plano */}
+        <View style={styles.welcomeCard}>
+          <View style={styles.welcomeHeader}>
+            <View style={styles.welcomeIconContainer}>
+              <Ionicons name="sparkles" size={24} color="#10B981" />
+            </View>
+            <Text style={styles.welcomeTitle}>
+              {getGreeting()}, {user?.username || user?.firstName || user?.fullName || 'Usuário'}!
+            </Text>
+          </View>
+
           <Text style={styles.welcomeText}>
             Estamos felizes em tê-lo conosco. Explore nossa plataforma, muitas novidades em breve!
           </Text>
-        </View>
 
-        {/* Data e hora */}
-        <View style={styles.dateTimeSection}>
-          <View style={[styles.welcomeLine, { backgroundColor: subscription.hasSubscription ? '#4CAF50' : '#DC3545' }]} />
           <View style={styles.dateTimeContainer}>
-            <Ionicons name="time-outline" size={20} color={subscription.hasSubscription ? '#4CAF50' : '#DC3545'} />
-            <View style={styles.dateTimeText}>
-              <Text style={styles.dateText}>{formatDate(currentTime)}</Text>
-              <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
-            </View>
+            <Ionicons name="time-outline" size={20} color="#87CEEB" />
+            <Text style={styles.dateTimeText}>{formatDate(currentTime)}</Text>
           </View>
-        </View>
+          <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
 
-
-        {/* Botão do plano de assinatura */}
-        <View style={styles.actions}>
-          <View style={[
-            styles.subscriptionButton,
-            !subscription.hasSubscription && styles.subscriptionButtonNoPlan
-          ]}>
-            <Ionicons 
-              name={subscription.hasSubscription ? "star" : "lock-closed"} 
-              size={20} 
-              color={subscription.hasSubscription ? "#4CAF50" : "#FFFFFF"} 
-            />
-            <View style={styles.subscriptionButtonContent}>
+          <View style={styles.planSection}>
+            <View style={[
+              styles.planButton,
+              { backgroundColor: subscription.hasSubscription ? 'rgba(76, 175, 80, 0.1)' : 'rgba(220, 53, 69, 0.1)' }
+            ]}>
+              <Ionicons 
+                name={subscription.hasSubscription ? "star" : "lock-closed"} 
+                size={20} 
+                color={subscription.hasSubscription ? "#4CAF50" : "#DC3545"} 
+              />
               <Text style={[
-                styles.subscriptionButtonLabel,
-                !subscription.hasSubscription && styles.subscriptionButtonLabelNoPlan
+                styles.planText,
+                { color: subscription.hasSubscription ? "#4CAF50" : "#DC3545" }
               ]}>
                 Seu plano atual
               </Text>
               <Text style={[
-                styles.subscriptionButtonText,
-                !subscription.hasSubscription && styles.subscriptionButtonTextNoPlan
+                styles.planName,
+                { color: subscription.hasSubscription ? "#4CAF50" : "#DC3545" }
               ]}>
-                {subscription.hasSubscription 
-                  ? subscription.displayName 
-                  : 'Não possui um plano ativo'
-                }
+                {subscription.hasSubscription ? subscription.displayName : 'Não possui um plano ativo'}
               </Text>
+              {subscription.hasSubscription && (
+                <View style={[
+                  styles.planBadge,
+                  { backgroundColor: 'rgba(76, 175, 80, 0.2)' }
+                ]}>
+                  <Text style={styles.planBadgeText}>ATIVO</Text>
+                </View>
+              )}
             </View>
           </View>
         </View>
-      </View>
-    </SafeAreaView>
+
+        {/* Seção de Acesso Rápido */}
+        <View style={styles.quickAccessSection}>
+          <Text style={styles.sectionTitle}>Acesso Rápido</Text>
+          <View style={styles.quickAccessGrid}>
+            <TouchableOpacity 
+              style={styles.quickAccessCard}
+              onPress={() => navigation.navigate('Products')}
+            >
+              <View style={[styles.cardIcon, { backgroundColor: 'rgba(16, 185, 129, 0.2)' }]}>
+                <Ionicons name="cube" size={24} color="#10B981" />
+              </View>
+              <Text style={styles.cardTitle}>Produtos</Text>
+              <Text style={styles.cardDescription}>Acesse nossos produtos</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.quickAccessCard}
+              onPress={() => navigation.navigate('Catalog')}
+            >
+              <View style={[styles.cardIcon, { backgroundColor: 'rgba(79, 70, 229, 0.2)' }]}>
+                <Ionicons name="grid" size={24} color="#4F46E5" />
+              </View>
+              <Text style={styles.cardTitle}>Catálogo</Text>
+              <Text style={styles.cardDescription}>Explore nosso conteúdo</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.quickAccessCard}
+              onPress={() => navigation.navigate('Profile')}
+            >
+              <View style={[styles.cardIcon, { backgroundColor: 'rgba(245, 158, 11, 0.2)' }]}>
+                <Ionicons name="person" size={24} color="#F59E0B" />
+              </View>
+              <Text style={styles.cardTitle}>Perfil</Text>
+              <Text style={styles.cardDescription}>Gerencie sua conta</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.quickAccessCard}
+              onPress={() => navigation.navigate('Notifications')}
+            >
+              <View style={[styles.cardIcon, { backgroundColor: 'rgba(239, 68, 68, 0.2)' }]}>
+                <Ionicons name="notifications" size={24} color="#EF4444" />
+              </View>
+              <Text style={styles.cardTitle}>Notificações</Text>
+              <Text style={styles.cardDescription}>Veja suas atualizações</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      </ScrollView>
+    </View>
   );
 };
 
@@ -180,10 +227,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#111548',
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  content: {
     paddingHorizontal: 24,
-    paddingTop: 32,
+    paddingTop: 24,
     paddingBottom: 16,
   },
   header: {
@@ -217,79 +266,123 @@ const styles = StyleSheet.create({
     backgroundColor: '#DC3545',
     width: 60,
   },
-  welcomeSection: {
-    flexDirection: 'row',
-    marginBottom: 24,
+  welcomeCard: {
+    backgroundColor: '#1E293B',
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 32,
   },
-  welcomeLine: {
-    width: 3,
-    backgroundColor: '#DC3545',
+  welcomeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  welcomeIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: 16,
   },
-  welcomeText: {
-    flex: 1,
-    fontSize: 16,
+  welcomeTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#FFFFFF',
-    lineHeight: 24,
+    flex: 1,
   },
-  dateTimeSection: {
-    flexDirection: 'row',
-    marginBottom: 32,
+  welcomeText: {
+    fontSize: 16,
+    color: '#94A3B8',
+    lineHeight: 24,
+    marginBottom: 24,
   },
   dateTimeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1,
+    marginBottom: 8,
   },
   dateTimeText: {
     marginLeft: 12,
-  },
-  dateText: {
     fontSize: 14,
     color: '#87CEEB',
-    marginBottom: 4,
   },
   timeText: {
-    fontSize: 16,
+    fontSize: 24,
     color: '#FFFFFF',
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
-  actions: {
-    gap: 16,
+  planSection: {
+    marginTop: 24,
   },
-  subscriptionButton: {
-    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+  planButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     padding: 16,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#4CAF50',
+    gap: 12,
   },
-  subscriptionButtonNoPlan: {
-    backgroundColor: '#DC3545',
-    borderColor: '#DC3545',
-  },
-  subscriptionButtonContent: {
-    marginLeft: 8,
-    alignItems: 'flex-start',
-  },
-  subscriptionButtonLabel: {
+  planText: {
     fontSize: 12,
-    color: '#4CAF50',
-    marginBottom: 2,
+    fontWeight: '500',
   },
-  subscriptionButtonLabelNoPlan: {
-    color: '#FFFFFF',
+  planName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    flex: 1,
   },
-  subscriptionButtonText: {
-    fontSize: 16,
+  planBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 16,
+  },
+  planBadgeText: {
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#4CAF50',
   },
-  subscriptionButtonTextNoPlan: {
+  quickAccessSection: {
+    marginTop: 32,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#FFFFFF',
+    marginBottom: 16,
+  },
+  quickAccessGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 16,
+  },
+  quickAccessCard: {
+    width: '47%',
+    backgroundColor: '#1E293B',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(51, 65, 85, 0.5)',
+  },
+  cardIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  cardDescription: {
+    fontSize: 12,
+    color: '#94A3B8',
+    lineHeight: 16,
   },
 });
 

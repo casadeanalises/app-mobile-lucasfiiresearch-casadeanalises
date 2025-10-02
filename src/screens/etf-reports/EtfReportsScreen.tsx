@@ -183,7 +183,7 @@ const EtfReportsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#111548',
   },
   header: {
     backgroundColor: '#1E293B',

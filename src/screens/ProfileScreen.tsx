@@ -334,7 +334,7 @@ const ProfileScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#111548',
   },
   content: {
     flex: 1,
@@ -470,6 +470,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    marginTop: 16,
   },
   modalCloseButton: {
     width: 32,

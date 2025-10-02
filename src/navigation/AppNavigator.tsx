@@ -6,7 +6,7 @@ import { RootStackParamList } from '../types';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import VerifyEmailScreen from '../screens/VerifyEmailScreen';
-import MainTabNavigator from './MainTabNavigator';
+import RootStackNavigator from './RootStackNavigator';
 import LoadingScreen from '../components/LoadingScreen';
 import { useAppLoading } from '../hooks/useAppLoading';
 
@@ -30,7 +30,7 @@ const AppNavigator: React.FC = () => {
       >
         {isSignedIn ? (
           // Usuário logado
-          <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+          <Stack.Screen name="Root" component={RootStackNavigator} />
         ) : (
           // Usuário não logado
           <>

@@ -11,8 +11,6 @@ import {
   TouchableOpacity,
   Linking,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '@clerk/clerk-expo';
 import { fetchNotifications } from '../../services/api';
@@ -20,9 +18,7 @@ import NotificationCard from './components/NotificationCard';
 import { Notification } from './types';
 
 const NotificationsScreen: React.FC = () => {
-  const navigation = useNavigation();
   const { user } = useUser();
-  const insets = useSafeAreaInsets();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -82,12 +78,6 @@ const NotificationsScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header, { paddingTop: insets.top }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.title}>Notificações</Text>
-      </View>
 
       {loading && !refreshing ? (
         <View style={styles.loadingContainer}>
@@ -143,30 +133,7 @@ const NotificationsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(148, 163, 184, 0.1)',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#1E293B',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  title: {
-    flex: 1,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    backgroundColor: '#111548',
   },
   loadingContainer: {
     flex: 1,

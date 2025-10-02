@@ -26,14 +26,14 @@ const CatalogScreen: React.FC = () => {
   // Verificar se o usuário tem assinatura (igual à página inicial)
   const getUserSubscription = () => {
     if (!user) return false;
-    
+
     const publicMetadata = user.publicMetadata as any;
     const subscriptionPlan = publicMetadata?.subscriptionPlan;
-    
-    return subscriptionPlan === 'basic' || 
-           subscriptionPlan === 'annualbasic' || 
-           subscriptionPlan === 'etfs_wallet' || 
-           subscriptionPlan === 'lowcost';
+
+    return subscriptionPlan === 'basic' ||
+      subscriptionPlan === 'annualbasic' ||
+      subscriptionPlan === 'etfs_wallet' ||
+      subscriptionPlan === 'lowcost';
   };
 
   // Verificar plano quando o usuário muda
@@ -42,7 +42,7 @@ const CatalogScreen: React.FC = () => {
     setHasActivePlan(hasPlan);
   }, [user]);
 
-  
+
   const catalogItems = [
     {
       id: 'investment-thesis',
@@ -54,22 +54,22 @@ const CatalogScreen: React.FC = () => {
       onPress: () => {
         // Debug: verificar dados do usuário
         console.log('🔍 Dados do usuário:', JSON.stringify(user?.publicMetadata, null, 2));
-        
+
         // Verificar se tem plano básico ou anual (podem acessar tudo)
         const publicMetadata = user?.publicMetadata as any;
         const subscriptionPlan = publicMetadata?.subscriptionPlan;
         const planType = publicMetadata?.planType;
-        
+
         console.log('📋 subscriptionPlan:', subscriptionPlan);
         console.log('📋 planType:', planType);
-        
-        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' || 
-                                   subscriptionPlan === 'annualbasic' ||
-                                   planType === 'basic' || 
-                                   planType === 'annual';
-        
+
+        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' ||
+          subscriptionPlan === 'annualbasic' ||
+          planType === 'basic' ||
+          planType === 'annual';
+
         console.log('✅ Tem plano básico/anual:', hasBasicOrAnnualPlan);
-        
+
         if (hasBasicOrAnnualPlan) {
           navigation.navigate('InvestmentThesis');
         } else {
@@ -84,7 +84,7 @@ const CatalogScreen: React.FC = () => {
     {
       id: 'weekly-reports',
       title: 'Relatório Semanal',
-      description: 'Acesse análises detalhadas e relatórios em PDFs',
+      description: 'Relatórios em PDFs',
       icon: 'document-text' as const,
       color: '#8B5CF6',
       gradient: ['rgba(139, 92, 246, 0.2)', 'rgba(139, 92, 246, 0.1)'],
@@ -93,49 +93,18 @@ const CatalogScreen: React.FC = () => {
         const publicMetadata = user?.publicMetadata as any;
         const subscriptionPlan = publicMetadata?.subscriptionPlan;
         const planType = publicMetadata?.planType;
-        
-        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' || 
-                                   subscriptionPlan === 'annualbasic' ||
-                                   planType === 'basic' || 
-                                   planType === 'annual';
-        
+
+        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' ||
+          subscriptionPlan === 'annualbasic' ||
+          planType === 'basic' ||
+          planType === 'annual';
+
         if (hasBasicOrAnnualPlan) {
           navigation.navigate('WeeklyReports');
         } else {
           Alert.alert(
             'Plano Necessário',
             'Para acessar os relatórios semanais, você precisa do plano Basic ou Annual. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
-            [{ text: 'Entendi', style: 'default' }]
-          );
-        }
-      },
-    },
-    {
-      id: 'etf-reports',
-      title: 'ETFs',
-      description: 'Relatórios em PDFs - Acesse relatórios e análises de ETFs em PDF',
-      icon: 'document-text' as const,
-      color: '#10B981',
-      gradient: ['rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0.1)'],
-      onPress: () => {
-        // Verificar se tem plano básico, anual ou etfs_wallet
-        const publicMetadata = user?.publicMetadata as any;
-        const subscriptionPlan = publicMetadata?.subscriptionPlan;
-        const planType = publicMetadata?.planType;
-        
-        const hasValidPlan = subscriptionPlan === 'basic' || 
-                           subscriptionPlan === 'annualbasic' ||
-                           subscriptionPlan === 'etfs_wallet' ||
-                           planType === 'basic' || 
-                           planType === 'annual' ||
-                           planType === 'etfs_wallet';
-        
-        if (hasValidPlan) {
-          navigation.navigate('EtfReports');
-        } else {
-          Alert.alert(
-            'Plano Necessário',
-            'Para acessar os relatórios de ETFs, você precisa do plano Basic, Annual ou ETFs Wallet. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
             [{ text: 'Entendi', style: 'default' }]
           );
         }
@@ -156,7 +125,7 @@ const CatalogScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={[styles.content, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
         bounces={true}
@@ -169,7 +138,7 @@ const CatalogScreen: React.FC = () => {
             Explore nossos conteúdos e recursos
           </Text>
         </View>
-        
+
         {/* Grid de Cards */}
         <View style={styles.gridContainer}>
           {catalogItems.map((item) => (
@@ -180,12 +149,12 @@ const CatalogScreen: React.FC = () => {
               activeOpacity={0.8}
             >
               {/* Gradiente de fundo */}
-              <View style={[styles.cardGradient, { 
-                backgroundColor: item.gradient[0] 
+              <View style={[styles.cardGradient, {
+                backgroundColor: item.gradient[0]
               }]} />
-              
+
               {/* Ícone */}
-              <View style={[styles.iconContainer, { 
+              <View style={[styles.iconContainer, {
                 backgroundColor: item.gradient[0],
                 borderColor: item.color + '40',
               }]}>
@@ -227,7 +196,7 @@ const CatalogScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#111548',
   },
   content: {
     flex: 1,

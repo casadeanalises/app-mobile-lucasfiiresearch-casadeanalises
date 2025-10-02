@@ -5,8 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MainTabParamList } from '../types';
 import HomeScreen from '../screens/HomeScreen';
 import CatalogStackNavigator from './CatalogStackNavigator';
-import ProfileScreen from '../screens/ProfileScreen';
-import NotificationsScreen from '../screens/notifications/NotificationsScreen';
+import ProductsScreen from '../screens/ProductsScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -23,10 +22,8 @@ const MainTabNavigator: React.FC = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Catalog') {
             iconName = focused ? 'grid' : 'grid-outline';
-          } else if (route.name === 'Profile') {
-            iconName = focused ? 'person' : 'person-outline';
-          } else if (route.name === 'Notifications') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
+          } else if (route.name === 'Products') {
+            iconName = focused ? 'cube' : 'cube-outline';
           } else {
             iconName = 'help-outline';
           }
@@ -69,17 +66,10 @@ const MainTabNavigator: React.FC = () => {
         }}
       />
       <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen}
+        name="Products" 
+        component={ProductsScreen}
         options={{
-          tabBarLabel: 'Perfil',
-        }}
-      />
-      <Tab.Screen 
-        name="Notifications" 
-        component={NotificationsScreen}
-        options={{
-          tabBarLabel: 'Notificações',
+          tabBarLabel: 'Produtos',
         }}
       />
     </Tab.Navigator>
