@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,29 +8,95 @@ import {
   Platform,
   ScrollView,
   Alert,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+// import { useNavigation } from '@react-navigation/native';
 import { useSignIn } from '@clerk/clerk-expo';
+import { Ionicons } from '@expo/vector-icons';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import GoogleSignInButton from '../components/GoogleSignInButton';
+import { BiometricService } from '../services/biometric';
+// import GoogleSignInButton from '../components/GoogleSignInButton';
 
 const LoginScreen: React.FC = () => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const { signIn, setActive, isLoaded } = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [loginType, setLoginType] = useState<'email' | 'username'>('email');
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricType, setBiometricType] = useState('Biometria');
+
+  // Verificar biometria ao carregar
+  useEffect(() => {
+    const checkBiometricStatus = async () => {
+      const available = await BiometricService.isAvailable();
+      const enabled = await BiometricService.isEnabled();
+      const type = await BiometricService.getBiometricType();
+      
+      setBiometricAvailable(available);
+      setBiometricEnabled(enabled);
+      setBiometricType(type);
+    };
+
+    checkBiometricStatus();
+  }, []);
+
+  const handleBiometricLogin = async () => {
+    try {
+      setLoading(true);
+      
+      // Verificar se há credenciais salvas primeiro
+      const credentials = await BiometricService.getCredentials();
+      
+      if (!credentials) {
+        Alert.alert(
+          'Credenciais não encontradas',
+          'Faça login manualmente primeiro para salvar suas credenciais.',
+          [{ text: 'Entendi', style: 'default' }]
+        );
+        return;
+      }
+      
+      // Autenticar com biometria
+      const biometricResult = await BiometricService.authenticateWithBiometric();
+      
+      if (biometricResult.success) {
+        // Fazer login com as credenciais salvas
+        if (!signIn) {
+          Alert.alert('Erro', 'Sistema de login não disponível');
+          return;
+        }
+        
+        const result = await signIn.create({
+          identifier: credentials.email,
+          password: credentials.password,
+        });
+
+        if (result?.status === 'complete') {
+          await setActive({ session: result.createdSessionId });
+        } else {
+          Alert.alert('Erro', 'Falha na autenticação biométrica');
+        }
+      } else {
+        Alert.alert('Erro', biometricResult.error || 'Falha na autenticação biométrica');
+      }
+    } catch (error) {
+      console.error('Erro no login biométrico:', error);
+      Alert.alert('Erro', 'Falha na autenticação biométrica');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
 
     if (!email.trim()) {
-      newErrors.email = loginType === 'email' ? 'Email é obrigatório' : 'Username é obrigatório';
-    } else if (loginType === 'email' && !/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = 'Email ou Nome de usuário é obrigatório';
     }
 
     if (!password.trim()) {
@@ -58,6 +124,11 @@ const LoginScreen: React.FC = () => {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId });
+        
+        // Salvar credenciais sempre que o login for bem-sucedido
+        // (para permitir uso futuro da biometria)
+        await BiometricService.saveCredentials(email, password);
+        
         // A navegação será automática devido ao estado isSignedIn no AppNavigator
       } else {
         Alert.alert('Erro', 'Falha no login. Tente novamente.');
@@ -70,9 +141,9 @@ const LoginScreen: React.FC = () => {
     }
   };
 
-  const handleSignUp = () => {
-    navigation.navigate('SignUp' as never);
-  };
+  // const handleSignUp = () => {
+  //   navigation.navigate('SignUp' as never);
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,34 +153,23 @@ const LoginScreen: React.FC = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.content}>
-            <Text style={styles.title}>Bem-vindo de volta!</Text>
-            <Text style={styles.subtitle}>
-              Faça login para acessar sua conta
-            </Text>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../../assets/logo_2.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
+            </View>
 
             <View style={styles.form}>
-              <View style={styles.loginTypeContainer}>
-                <Button
-                  title="Email"
-                  onPress={() => setLoginType('email')}
-                  variant={loginType === 'email' ? 'primary' : 'outline'}
-                  size="small"
-                />
-                <Button
-                  title="Username"
-                  onPress={() => setLoginType('username')}
-                  variant={loginType === 'username' ? 'primary' : 'outline'}
-                  size="small"
-                />
-              </View>
-
               <Input
-                label={loginType === 'email' ? 'Email' : 'Username'}
+                label="Email ou Nome de usuário"
                 value={email}
                 onChangeText={setEmail}
-                placeholder={loginType === 'email' ? 'Digite seu email' : 'Digite seu username'}
-                keyboardType={loginType === 'email' ? 'email-address' : 'default'}
+                placeholder="Digite seu email ou nome de usuário"
+                keyboardType="default"
                 error={errors.email}
+                theme="dark"
               />
 
               <Input
@@ -119,6 +179,7 @@ const LoginScreen: React.FC = () => {
                 placeholder="Digite sua senha"
                 secureTextEntry
                 error={errors.password}
+                theme="dark"
               />
 
               <Button
@@ -128,19 +189,34 @@ const LoginScreen: React.FC = () => {
                 disabled={loading}
               />
 
-              <Button
+              {/* Botão de Biometria */}
+              {biometricAvailable && biometricEnabled && (
+                <TouchableOpacity
+                  style={styles.biometricButton}
+                  onPress={handleBiometricLogin}
+                  disabled={loading}
+                >
+                  <Ionicons name="finger-print" size={24} color="#3B82F6" />
+                  <Text style={styles.biometricButtonText}>
+                    Autenticação Biométrica
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {/* <Button
                 title="Criar conta"
                 onPress={handleSignUp}
                 variant="outline"
-              />
+              /> */}
 
-              <View style={styles.divider}>
+              {/* <View style={styles.divider}>
                 <View style={styles.dividerLine} />
                 <Text style={styles.dividerText}>ou</Text>
                 <View style={styles.dividerLine} />
-              </View>
+              </View> */}
 
-              <GoogleSignInButton />
+              {/* <GoogleSignInButton /> */}
+
             </View>
           </View>
         </ScrollView>
@@ -152,7 +228,7 @@ const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#060e6f',
   },
   keyboardView: {
     flex: 1,
@@ -166,26 +242,35 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
     justifyContent: 'center',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#000000',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#8E8E93',
-    textAlign: 'center',
+  logoContainer: {
+    alignItems: 'center',
     marginBottom: 48,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    borderRadius: 250,
   },
   form: {
     gap: 16,
   },
-  loginTypeContainer: {
+  biometricButton: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderWidth: 1,
+    borderColor: '#3B82F6',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  biometricButtonText: {
+    color: '#3B82F6',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   divider: {
     flexDirection: 'row',
@@ -195,11 +280,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#D1D1D6',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   dividerText: {
     marginHorizontal: 16,
-    color: '#8E8E93',
+    color: '#FFFFFF',
     fontSize: 14,
   },
 });

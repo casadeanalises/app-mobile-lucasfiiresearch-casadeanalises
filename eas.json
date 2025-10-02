@@ -16,13 +16,13 @@
         "simulator": false
       },
       "env": {
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_dHJ1c3RlZC1sYWR5YnVnLTkwLmNsZXJrLmFjY291bnRzLmRldiQ"
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsubHVjYXNmaWlyZXNlYXJjaC5jb20uYnIk"
       }
     },
     "production": {
       "distribution": "store",
       "env": {
-        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_dHJ1c3RlZC1sYWR5YnVnLTkwLmNsZXJrLmFjY291bnRzLmRldiQ"
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_live_Y2xlcmsubHVjYXNmaWlyZXNlYXJjaC5jb20uYnIk"
       }
     }
   },

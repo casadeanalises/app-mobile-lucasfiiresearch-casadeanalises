@@ -105,7 +105,7 @@ const LoadingScreen: React.FC = () => {
 
         <Animated.View style={[styles.textContainer, { opacity: fadeAnim }]}>
           <Text style={styles.appName}>Lucas FII Research</Text>
-          <Text style={styles.loadingText}>Carregando...</Text>
+          {/* <Text style={styles.loadingText}>Carregando...</Text> */}
         </Animated.View>
 
         <Animated.View style={[styles.dotsContainer, { opacity: fadeAnim }]}>

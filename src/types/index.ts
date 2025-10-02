@@ -21,11 +21,14 @@ export type MainTabParamList = {
   Home: undefined;
   Catalog: undefined;
   Profile: undefined;
+  Notifications: undefined;
 };
 
 export type CatalogStackParamList = {
   CatalogHome: undefined;
   InvestmentThesis: undefined;
+  WeeklyReports: undefined;
+  EtfReports: undefined;
 };
 
 // Tipos de autenticação
@@ -54,6 +57,7 @@ export interface InputProps {
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
   error?: string | undefined;
   maxLength?: number;
+  theme?: 'light' | 'dark';
 }
 
 // Tipos de API

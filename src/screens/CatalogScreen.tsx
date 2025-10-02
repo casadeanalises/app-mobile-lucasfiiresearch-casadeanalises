@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,11 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { CatalogStackParamList } from '../types';
@@ -18,6 +20,28 @@ type NavigationProp = StackNavigationProp<CatalogStackParamList, 'CatalogHome'>;
 const CatalogScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NavigationProp>();
+  const { user } = useUser();
+  const [hasActivePlan, setHasActivePlan] = useState<boolean | null>(null);
+
+  // Verificar se o usuário tem assinatura (igual à página inicial)
+  const getUserSubscription = () => {
+    if (!user) return false;
+    
+    const publicMetadata = user.publicMetadata as any;
+    const subscriptionPlan = publicMetadata?.subscriptionPlan;
+    
+    return subscriptionPlan === 'basic' || 
+           subscriptionPlan === 'annualbasic' || 
+           subscriptionPlan === 'etfs_wallet' || 
+           subscriptionPlan === 'lowcost';
+  };
+
+  // Verificar plano quando o usuário muda
+  useEffect(() => {
+    const hasPlan = getUserSubscription();
+    setHasActivePlan(hasPlan);
+  }, [user]);
+
   
   const catalogItems = [
     {
@@ -27,16 +51,116 @@ const CatalogScreen: React.FC = () => {
       icon: 'play-circle' as const,
       color: '#F59E0B',
       gradient: ['rgba(245, 158, 11, 0.2)', 'rgba(245, 158, 11, 0.1)'],
-      onPress: () => navigation.navigate('InvestmentThesis'),
+      onPress: () => {
+        // Debug: verificar dados do usuário
+        console.log('🔍 Dados do usuário:', JSON.stringify(user?.publicMetadata, null, 2));
+        
+        // Verificar se tem plano básico ou anual (podem acessar tudo)
+        const publicMetadata = user?.publicMetadata as any;
+        const subscriptionPlan = publicMetadata?.subscriptionPlan;
+        const planType = publicMetadata?.planType;
+        
+        console.log('📋 subscriptionPlan:', subscriptionPlan);
+        console.log('📋 planType:', planType);
+        
+        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' || 
+                                   subscriptionPlan === 'annualbasic' ||
+                                   planType === 'basic' || 
+                                   planType === 'annual';
+        
+        console.log('✅ Tem plano básico/anual:', hasBasicOrAnnualPlan);
+        
+        if (hasBasicOrAnnualPlan) {
+          navigation.navigate('InvestmentThesis');
+        } else {
+          Alert.alert(
+            'Plano Necessário',
+            'Para acessar as teses de investimento, você precisa do plano Basic ou Annual. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
+            [{ text: 'Entendi', style: 'default' }]
+          );
+        }
+      },
     },
-    // Adicione mais itens aqui conforme necessário
+    {
+      id: 'weekly-reports',
+      title: 'Relatório Semanal',
+      description: 'Acesse análises detalhadas e relatórios em PDFs',
+      icon: 'document-text' as const,
+      color: '#8B5CF6',
+      gradient: ['rgba(139, 92, 246, 0.2)', 'rgba(139, 92, 246, 0.1)'],
+      onPress: () => {
+        // Verificar se tem plano básico ou anual (podem acessar tudo)
+        const publicMetadata = user?.publicMetadata as any;
+        const subscriptionPlan = publicMetadata?.subscriptionPlan;
+        const planType = publicMetadata?.planType;
+        
+        const hasBasicOrAnnualPlan = subscriptionPlan === 'basic' || 
+                                   subscriptionPlan === 'annualbasic' ||
+                                   planType === 'basic' || 
+                                   planType === 'annual';
+        
+        if (hasBasicOrAnnualPlan) {
+          navigation.navigate('WeeklyReports');
+        } else {
+          Alert.alert(
+            'Plano Necessário',
+            'Para acessar os relatórios semanais, você precisa do plano Basic ou Annual. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
+            [{ text: 'Entendi', style: 'default' }]
+          );
+        }
+      },
+    },
+    {
+      id: 'etf-reports',
+      title: 'ETFs',
+      description: 'Relatórios em PDFs - Acesse relatórios e análises de ETFs em PDF',
+      icon: 'document-text' as const,
+      color: '#10B981',
+      gradient: ['rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0.1)'],
+      onPress: () => {
+        // Verificar se tem plano básico, anual ou etfs_wallet
+        const publicMetadata = user?.publicMetadata as any;
+        const subscriptionPlan = publicMetadata?.subscriptionPlan;
+        const planType = publicMetadata?.planType;
+        
+        const hasValidPlan = subscriptionPlan === 'basic' || 
+                           subscriptionPlan === 'annualbasic' ||
+                           subscriptionPlan === 'etfs_wallet' ||
+                           planType === 'basic' || 
+                           planType === 'annual' ||
+                           planType === 'etfs_wallet';
+        
+        if (hasValidPlan) {
+          navigation.navigate('EtfReports');
+        } else {
+          Alert.alert(
+            'Plano Necessário',
+            'Para acessar os relatórios de ETFs, você precisa do plano Basic, Annual ou ETFs Wallet. Acesse lucasfiiresearch.com.br para adquirir seu plano.',
+            [{ text: 'Entendi', style: 'default' }]
+          );
+        }
+      },
+    },
   ];
+
+  // Mostrar loading enquanto verifica o plano
+  if (hasActivePlan === null) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Verificando seu plano...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView 
         style={[styles.content, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
+        bounces={true}
+        contentContainerStyle={styles.scrollContent}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -109,9 +233,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 120,
+  },
   header: {
     paddingTop: 32,
     paddingBottom: 16,
+    alignItems: 'center',
   },
   title: {
     fontSize: 32,
@@ -124,8 +253,8 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
   },
   gridContainer: {
-    gap: 16,
-    marginBottom: 32,
+    gap: 24,
+    marginBottom: 80,
   },
   card: {
     position: 'relative',
@@ -215,6 +344,17 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
     textAlign: 'center',
     lineHeight: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#111548',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
 });
 
