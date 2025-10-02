@@ -31,16 +31,16 @@ const HomeScreen: React.FC = () => {
   const getUserSubscription = () => {
     const publicMetadata = user?.publicMetadata as any;
     const subscriptionPlan = publicMetadata?.subscriptionPlan;
-    
-    if (subscriptionPlan === 'basic' || subscriptionPlan === 'annualbasic' || 
-        subscriptionPlan === 'etfs_wallet' || subscriptionPlan === 'lowcost') {
+
+    if (subscriptionPlan === 'basic' || subscriptionPlan === 'annualbasic' ||
+      subscriptionPlan === 'etfs_wallet' || subscriptionPlan === 'lowcost') {
       return {
         hasSubscription: true,
         type: subscriptionPlan,
         displayName: getSubscriptionDisplayName(subscriptionPlan)
       };
     }
-    
+
     return { hasSubscription: false, type: null, displayName: null };
   };
 
@@ -56,22 +56,22 @@ const HomeScreen: React.FC = () => {
 
   const formatDate = (date: Date) => {
     const days = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
-    const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
-                   'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-    
+    const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+      'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+
     const dayName = days[date.getDay()];
     const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
-    
+
     return `${dayName}, ${day} de ${month} de ${year}`;
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('pt-BR', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
+    return date.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     });
   };
 
@@ -91,7 +91,7 @@ const HomeScreen: React.FC = () => {
         <View style={[styles.content, { paddingBottom: insets.bottom + 100 }]}>
           <View style={styles.header}>
             <View style={styles.iconContainer}>
-              <Ionicons name="sparkles" size={24} color="#87CEEB" /> 
+              <Ionicons name="sparkles" size={24} color="#87CEEB" />
             </View>
             <View style={styles.greetingContainer}>
               <Text style={[styles.greeting, { color: '#87CEEB' }]}>
@@ -107,7 +107,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 100 }]}
       >
@@ -138,10 +138,10 @@ const HomeScreen: React.FC = () => {
               styles.planButton,
               { backgroundColor: subscription.hasSubscription ? 'rgba(76, 175, 80, 0.1)' : 'rgba(220, 53, 69, 0.1)' }
             ]}>
-              <Ionicons 
-                name={subscription.hasSubscription ? "star" : "lock-closed"} 
-                size={20} 
-                color={subscription.hasSubscription ? "#4CAF50" : "#DC3545"} 
+              <Ionicons
+                name={subscription.hasSubscription ? "star" : "lock-closed"}
+                size={20}
+                color={subscription.hasSubscription ? "#4CAF50" : "#DC3545"}
               />
               <Text style={[
                 styles.planText,
@@ -171,18 +171,8 @@ const HomeScreen: React.FC = () => {
         <View style={styles.quickAccessSection}>
           <Text style={styles.sectionTitle}>Acesso Rápido</Text>
           <View style={styles.quickAccessGrid}>
-            <TouchableOpacity 
-              style={styles.quickAccessCard}
-              onPress={() => navigation.navigate('Products')}
-            >
-              <View style={[styles.cardIcon, { backgroundColor: 'rgba(16, 185, 129, 0.2)' }]}>
-                <Ionicons name="cube" size={24} color="#10B981" />
-              </View>
-              <Text style={styles.cardTitle}>Produtos</Text>
-              <Text style={styles.cardDescription}>Acesse nossos produtos</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.quickAccessCard}
               onPress={() => navigation.navigate('Catalog')}
             >
@@ -193,7 +183,19 @@ const HomeScreen: React.FC = () => {
               <Text style={styles.cardDescription}>Explore nosso conteúdo</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
+              style={styles.quickAccessCard}
+              onPress={() => navigation.navigate('Products')}
+            >
+              <View style={[styles.cardIcon, { backgroundColor: 'rgba(16, 185, 129, 0.2)' }]}>
+                <Ionicons name="cube" size={24} color="#10B981" />
+              </View>
+              <Text style={styles.cardTitle}>Produtos</Text>
+              <Text style={styles.cardDescription}>Acesse nossos produtos</Text>
+            </TouchableOpacity>
+
+
+            {/* <TouchableOpacity 
               style={styles.quickAccessCard}
               onPress={() => navigation.navigate('Profile')}
             >
@@ -213,7 +215,7 @@ const HomeScreen: React.FC = () => {
               </View>
               <Text style={styles.cardTitle}>Notificações</Text>
               <Text style={styles.cardDescription}>Veja suas atualizações</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 
