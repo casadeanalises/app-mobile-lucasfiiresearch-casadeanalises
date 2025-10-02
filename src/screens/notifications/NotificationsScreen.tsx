@@ -79,6 +79,27 @@ const NotificationsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
 
+      {/* Aviso do WhatsApp */}
+      <View style={styles.whatsappBanner}>
+        <View style={styles.whatsappIconContainer}>
+          <Ionicons name="logo-whatsapp" size={24} color="#25D366" />
+        </View>
+        <View style={styles.whatsappContent}>
+          <Text style={styles.whatsappTitle}>Notificações em Tempo Real</Text>
+          <Text style={styles.whatsappText}>
+            Para receber notificações em tempo real, entre em nossa comunidade no WhatsApp.
+            Estas notificações serão apagadas automaticamente.
+          </Text>
+          <TouchableOpacity 
+            style={styles.whatsappButton}
+            onPress={() => Linking.openURL('https://chat.whatsapp.com/H9Rj2n2O7hmKsiiI5dpDcV')}
+          >
+            <Text style={styles.whatsappButtonText}>Entrar no Grupo</Text>
+            <Ionicons name="arrow-forward" size={16} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {loading && !refreshing ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
@@ -131,6 +152,54 @@ const NotificationsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  whatsappBanner: {
+    backgroundColor: '#1E293B',
+    margin: 16,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  whatsappIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(37, 211, 102, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  whatsappContent: {
+    flex: 1,
+  },
+  whatsappTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  whatsappText: {
+    fontSize: 14,
+    color: '#94A3B8',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  whatsappButton: {
+    backgroundColor: '#25D366',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    gap: 8,
+  },
+  whatsappButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   container: {
     flex: 1,
     backgroundColor: '#111548',
